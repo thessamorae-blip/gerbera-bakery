@@ -1,0 +1,14 @@
+{
+  "name": "gerbera-bakery",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "python3 server.py"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

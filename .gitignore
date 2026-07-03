@@ -1,0 +1,23 @@
+# ── Credenciales — NUNCA subir a GitHub ──
+.env
+.env.local
+.env.*.local
+
+# ── Archivos del sistema ──
+.DS_Store
+Thumbs.db
+
+# ── Python ──
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ── Node (no se usa pero por precaución) ──
+node_modules/
+
+# ── Vercel ──
+.vercel/
+
+# ── Archivos internos de Claude ──
+prompt-master/
