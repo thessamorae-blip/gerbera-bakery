@@ -156,32 +156,30 @@ BRAND_SYSTEM_PROMPT = (
     "'Horneando momentos que unen'. Genera captions en español mexicano, naturales y conversacionales."
 )
 
-def call_claude(system_prompt, user_prompt):
-    api_key = get_env('ANTHROPIC_API_KEY')
-    if not api_key or api_key.startswith('sk-ant-PEGA'):
-        return None, 'ANTHROPIC_API_KEY no configurada en el archivo .env'
+def call_gemini(system_prompt, user_prompt):
+    api_key = get_env('GEMINI_API_KEY')
+    if not api_key or api_key.startswith('TU_GEMINI'):
+        return None, 'GEMINI_API_KEY no configurada en el archivo .env'
     payload = {
-        'model': 'claude-sonnet-4-6',
-        'max_tokens': 1500,
-        'system': system_prompt,
-        'messages': [{'role': 'user', 'content': user_prompt}],
+        'systemInstruction': {'parts': [{'text': system_prompt}]},
+        'contents': [{'parts': [{'text': user_prompt}]}],
+        'generationConfig': {'maxOutputTokens': 1500, 'temperature': 0.8},
     }
     data = json.dumps(payload, ensure_ascii=False).encode('utf-8')
-    req  = urllib.request.Request('https://api.anthropic.com/v1/messages', data=data, method='POST')
-    req.add_header('x-api-key',          api_key)
-    req.add_header('anthropic-version',  '2023-06-01')
-    req.add_header('content-type',       'application/json')
+    url  = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}'
+    req  = urllib.request.Request(url, data=data, method='POST')
+    req.add_header('content-type', 'application/json')
     try:
         with urllib.request.urlopen(req, timeout=45) as resp:
             result = json.loads(resp.read())
-            return result['content'][0]['text'], None
+            return result['candidates'][0]['content']['parts'][0]['text'], None
     except urllib.error.HTTPError as e:
         body = e.read().decode('utf-8', errors='replace')
         return None, f'Error {e.code}: {body}'
     except Exception as e:
         return None, str(e)
 
-def parse_claude_json(text):
+def parse_ai_json(text):
     m = re.search(r'```(?:json)?\s*([\s\S]*?)```', text)
     if m:
         text = m.group(1).strip()
@@ -1107,11 +1105,11 @@ class GerberaHandler(SimpleHTTPRequestHandler):
                 f'  "image_idea": "descripción breve de qué fotografiar o grabar"\n'
                 f'}}'
             )
-            text, err = call_claude(BRAND_SYSTEM_PROMPT, user_prompt)
+            text, err = call_gemini(BRAND_SYSTEM_PROMPT, user_prompt)
             if err:
                 return self._json(500, {'error': err})
             try:
-                result = parse_claude_json(text)
+                result = parse_ai_json(text)
                 return self._json(200, result)
             except Exception as e:
                 return self._json(500, {'error': f'Error al procesar respuesta: {e}', 'raw': text})
@@ -1174,7 +1172,7 @@ class GerberaHandler(SimpleHTTPRequestHandler):
                 f"- Folio: {order.get('folio', '')}\n\n"
                 f"Tarea: {instruction}"
             )
-            text, err = call_claude(MESSAGE_SYSTEM_PROMPT, user_prompt)
+            text, err = call_gemini(MESSAGE_SYSTEM_PROMPT, user_prompt)
             if err:
                 return self._json(500, {'error': err})
             return self._json(200, {'message': text})
