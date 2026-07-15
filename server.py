@@ -166,7 +166,7 @@ def call_gemini(system_prompt, user_prompt):
         'generationConfig': {'maxOutputTokens': 1500, 'temperature': 0.8},
     }
     data = json.dumps(payload, ensure_ascii=False).encode('utf-8')
-    url  = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}'
+    url  = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key={api_key}'
     req  = urllib.request.Request(url, data=data, method='POST')
     req.add_header('content-type', 'application/json')
     try:
