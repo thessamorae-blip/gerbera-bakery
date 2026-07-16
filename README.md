@@ -56,7 +56,7 @@ El archivo `.env` contiene credenciales privadas. **Nunca debe subirse a interne
 | `SUPABASE_KEY` | Llave de acceso a la base de datos |
 | `ADMIN_EMAIL` | Correo de Gerbera Bakery (desde donde se envían notificaciones) |
 | `GMAIL_APP_PASSWORD` | Contraseña de aplicación de Gmail para enviar correos |
-| `GEMINI_API_KEY` | Llave de la API de Gemini (Google) para generar contenido de redes sociales y mensajes |
+| `ANTHROPIC_API_KEY` | Llave de la API de Claude para generar contenido de redes sociales y mensajes |
 
 ---
 
@@ -75,7 +75,7 @@ El archivo `.env` contiene credenciales privadas. **Nunca debe subirse a interne
 
 | Función | Qué hace |
 |---|---|
-| `call_gemini(sistema, usuario)` | Llama a la API de Gemini (Google) y devuelve el texto generado |
+| `call_claude(sistema, usuario)` | Llama a la API de Claude y devuelve el texto generado |
 | `generate_folio()` | Genera el número de folio para cada pedido nuevo (GB-1001, GB-1002...) |
 | `send_order_emails(pedido)` | Envía correos de confirmación al cliente y a la admin cuando llega un pedido |
 | `send_status_update_email(pedido)` | Envía correo al cliente cuando la admin cambia el estado del pedido |
@@ -133,5 +133,5 @@ El archivo `.env` contiene credenciales privadas. **Nunca debe subirse a interne
 - La app usa **React 18 via CDN** — no hay bundler ni npm necesario
 - El servidor es **Python puro** (sin frameworks externos) usando `http.server`
 - La base de datos es **Supabase** (Postgres), accedida directamente desde el servidor vía REST
-- La **API Key de Gemini** solo vive en `.env` — nunca en el código ni en el navegador
+- La **API Key de Claude** solo vive en `.env` — nunca en el código ni en el navegador
 - El token de sesión del admin se borra cada vez que se recarga la página (seguridad intencional)
